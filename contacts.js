@@ -1,10 +1,10 @@
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require("fs/promises");
+const path = require("path");
 
 const contactsPath = path.join('db','contacts.json');
  
 
-async function listContacts() {
+async function listContacts() {    // ...твій код. Повертає масив контактів.
     try {
         const data = await fs.readFile('contactsPath');
     }
@@ -12,31 +12,38 @@ async function listContacts() {
         console.log('err');
          return JSON.parse(data);
     }
-  // ...твій код. Повертає масив контактів.
 }
 
-async function getContactById(contactId) {
+async function getContactById(contactId) {  // ...твій код. Повертає об'єкт контакту з таким id. Повертає null, якщо контакт з таким id не знайдений.
      try {
-
+       const contacts = await listContacts();
+       return contacts.find(contact => contact.id === contactId) || null;
+        console.log(getContactById);
     }
     catch (err) {
         console.log('err');
     }
-  // ...твій код. Повертає об'єкт контакту з таким id. Повертає null, якщо контакт з таким id не знайдений.
+   
 }
 
-async function removeContact(contactId) {
+async function removeContact(contactId) {  // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
      try {
-         const data = await fs.promises.readFile('contactsPath');
-    const contacts = JSON.parse(data);
-    const filteredContacts = contacts.filter(c => c.id !== id);
-    await fs.promises.writeFile('contactsPath', JSON.stringify(filteredContacts));
+  const removeContact = async (id) => {
+  const contacts = await listContacts();
+  const index = contacts.findIndex((contact) => contact.id === id);
+  if (index === -1) {
+    return null;
+  }
+  const [result] = contacts.splice(index, 1);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  
+};
     }
     catch (err) {
         console.log('err');
-         
+        return result;
     }
-  // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
+  
 }
 
 async function addContact(name, email, phone) {
@@ -52,3 +59,10 @@ async function addContact(name, email, phone) {
     }
   // ...твій код. Повертає об'єкт доданого контакту (з id).
 }
+
+ module.exports = {
+    listContacts,
+    getContactById,
+    addContact,
+    removeContact,
+  };
